@@ -7,9 +7,9 @@ rosrun pcl_extract_cluster_ros pcl_extract_cluster_ros_node _target_frame:=camer
 
 ![demo](./demo.gif)  
   
-green objects : the closest object in yellow objects  
+red objects : the closest object in yellow objects  
 yellow objects: objects under cluster_size(default=0.5) meter  
-red objects   : the others  
+green objects   : the others  
  
 
 

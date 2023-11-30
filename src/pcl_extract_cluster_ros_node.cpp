@@ -5,10 +5,10 @@
 #include <pcl_ros/transforms.h>
 
 #include <pcl/point_types.h>
-#include <pcl/filters/passthrough.h>  
-#include <pcl/filters/voxel_grid.h>  
-#include <pcl/filters/impl/voxel_grid.hpp>  
-#include <pcl/segmentation/extract_clusters.h> 
+#include <pcl/filters/passthrough.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/filters/impl/voxel_grid.hpp>
+#include <pcl/segmentation/extract_clusters.h>
 
 #include <visualization_msgs/MarkerArray.h>
 
@@ -28,7 +28,7 @@ private:
 
   pcl::PassThrough<PointT> pass_;
   PointCloud::Ptr cloud_passthrough_;
-  ros::Publisher pub_passthrough_; 
+  ros::Publisher pub_passthrough_;
 
   pcl::VoxelGrid<PointT> voxel_;
   PointCloud::Ptr cloud_voxel_;
@@ -73,13 +73,13 @@ private:
       ec_.extract(cluster_indices);
       visualization_msgs::MarkerArray marker_array;
 
-      int target_index = -1; 
+      int target_index = -1;
       int marker_id = 0;
       size_t candidate = 0;
 
-      for (std::vector<pcl::PointIndices>::const_iterator 
+      for (std::vector<pcl::PointIndices>::const_iterator
              it = cluster_indices.begin(),
-             it_end = cluster_indices.end();            
+             it_end = cluster_indices.end();
              it != it_end; ++it, ++marker_id)
       {
        Eigen::Vector4f min_pt, max_pt;
@@ -90,7 +90,7 @@ private:
         {
 
         bool is_candidate = true;
-        
+
         if (cluster_size.x() < candidate_size *0.1 || cluster_size.x() > candidate_size) is_candidate = false;
         else if (cluster_size.y() < candidate_size *0.1 || cluster_size.y() > candidate_size) is_candidate = false;
         else if (cluster_size.z() < candidate_size *0.1 || cluster_size.z() > candidate_size) is_candidate = false;
@@ -131,7 +131,7 @@ private:
     ROS_INFO("points : %zu, paththrough: %zu, voxelgrid: %zu, cluster: %zu)",
              msg->size(), cloud_passthrough_->size(), cloud_voxel_->size(),
              cluster_indices.size());
-      
+
     }
     catch (std::exception &e){
       ROS_ERROR("%s", e.what());
@@ -176,15 +176,15 @@ public:
     pub_transformed_ = nh_.advertise<PointCloud>("cloud_transformed", 1);
     cloud_tranformed_.reset(new PointCloud());
 
-    
+
     double min_height = 0.1;
     double max_height = 1.0;
-    pass_.setFilterFieldName("z"); 
-    pass_.setFilterLimits(min_height, max_height); 
+    pass_.setFilterFieldName("z");
+    pass_.setFilterLimits(min_height, max_height);
     cloud_passthrough_.reset(new PointCloud());
     pub_passthrough_ = nh_.advertise<PointCloud>("passthrough", 1);
 
-    voxel_.setLeafSize(0.025f, 0.025f, 0.025f); 
+    voxel_.setLeafSize(0.025f, 0.025f, 0.025f);
     cloud_voxel_.reset(new PointCloud());
     pub_voxel_ = nh_.advertise<PointCloud>("voxel", 1);
 

@@ -1,0 +1,49 @@
+name: Melodic
+
+on: pull_request
+
+jobs:
+    job1:
+        name: Build
+        runs-on: ubuntu-18.04
+        container: ros:melodic-ros-core
+        steps:
+            - name: Update ROS Repository Key
+              run: |
+                  apt-get update
+                  apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key 'AD19BAB3CBF125EA'
+              shell: bash
+            - name: Install Curl
+              run: |
+                  apt-get update
+                  apt-get install -y curl
+              shell: bash
+            - name: Add ROS GPG Key
+              run: |
+                  # curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+                  curl -s http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xAD19BAB3CBF125EA | sudo apt-key add -
+              shell: bash
+            - name: Install Git
+              run: |
+                  apt-get update
+                  apt-get install -y git
+              shell: bash
+            - name: Clone repository
+              run: |
+                  mkdir -p ~/catkin_ws/src
+                  cd ~/catkin_ws/src
+                  git clone https://github.com/rsasaki0109/pcl_extract_cluster_ros
+            - name: Install dependencies
+              run: |
+                  source /opt/ros/melodic/setup.bash
+                  cd ~/catkin_ws/src
+                  sudo rosdep install -r -y --from-paths . --ignore-src
+                  sudo apt-get install -y ros-melodic-pcl-ros
+              shell: bash
+            - name: Build packages
+              run: |
+                  source /opt/ros/melodic/setup.bash
+                  cd ~/catkin_ws
+                  catkin_make -j4
+                  source ~/catkin_ws/devel/setup.bash
+              shell: bash
